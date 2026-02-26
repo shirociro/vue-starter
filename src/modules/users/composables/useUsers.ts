@@ -9,9 +9,9 @@ import {
 
 export const useUsers = () => {
   const queryClient = useQueryClient();
-  let timeoutId = null; // Replaces useRef(null)
+  let timeoutId = null;
 
-  // 0. State Management (Replaces useState)
+  // Alert state
   const alert = reactive({
     show: false,
     message: "",
@@ -30,20 +30,20 @@ export const useUsers = () => {
     }, 3000);
   };
 
-  // Cleanup timeout on component unmount
   onUnmounted(() => {
     if (timeoutId) clearTimeout(timeoutId);
   });
 
   /* 1. FETCH USERS */
   const {
-    data: users, // This will be a Ref, so use .value in logic
+    data: usersData,
     isLoading,
     isError,
   } = useQuery({
     queryKey: ["users"],
     queryFn: fetchUsers,
-    initialData: [], // Default value
+    initialData: { rows: [], total: 0, page: 1, limit: null }, // match your backend
+    select: (data) => data.rows, // Extract rows for the UI
     staleTime: 0,
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,
@@ -72,9 +72,7 @@ export const useUsers = () => {
     networkMode: "offlineFirst",
     onMutate: async (updatedUser) =>
       updateLocalCache((old = []) =>
-        old.map((u) =>
-          u.id === updatedUser.id ? { ...u, ...updatedUser } : u,
-        ),
+        old.map((u) => (u.id === updatedUser.id ? { ...u, ...updatedUser } : u)),
       ),
     onError: (err, _, context) => {
       if (navigator.onLine && context?.previous) {
@@ -108,7 +106,7 @@ export const useUsers = () => {
   });
 
   return {
-    users, // Note: In Vue, this is a Ref. Template unwrap it automatically.
+    users: usersData, // already a Ref
     isLoading,
     isError,
     alert,

@@ -1,30 +1,23 @@
 import { createRouter, createWebHistory } from "vue-router";
-import { adminGuard } from "@/app/guard";
-
-// Lazy-load modules
-const Portfolio = () => import("@/modules/portfolio/index.vue");
-const Tasks = () => import("@/modules/tasks/index.vue");
-const Users = () => import("@/modules/users/index.vue");
+import { authGuard } from "@/app/guard";
 
 const routes = [
-  { path: "/", redirect: "/portfolio" },
+  { 
+    path: "/tasks", 
+    component: () => import("@/modules/tasks/index.vue"),
+    meta: { requiresAuth: true, layout: "AdminLayout" } 
+  },
+  { 
+    path: "/users", 
+    component: () => import("@/modules/users/index.vue"),
+    meta: { requiresAuth: true, layout: "AdminLayout" } 
+  },
   {
     path: "/portfolio",
-    component: Portfolio,
-    meta: { layout: "AdminLayout" },
+    component: () => import("@/modules/portfolio/index.vue"),
+    meta: { requiresAuth: true, layout: "AdminLayout" }
   },
-  {
-    path: "/tasks",
-    component: Tasks,
-    meta: { layout: "AdminLayout" },
-    beforeEnter: adminGuard,
-  },
-  {
-    path: "/users",
-    component: Users,
-    meta: { layout: "AdminLayout" },
-    // beforeEnter: adminGuard,
-  },
+  { path: "/:pathMatch(.*)*", redirect: "/tasks" }
 ];
 
 const router = createRouter({
@@ -32,4 +25,12 @@ const router = createRouter({
   routes,
 });
 
+// The Global "Bouncer"
+router.beforeEach(async (to, from, next) => {
+  if (to.meta.requiresAuth) {
+    await authGuard(to, from, next);
+  } else {
+    next();
+  }
+});
 export default router;

@@ -6,15 +6,11 @@
       <div class="p-5">
         <div class="flex justify-between items-start">
           <div class="flex flex-col">
-            <span
-              class="text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >Username</span
-            >
             <h3 class="text-xl font-bold text-gray-900 dark:text-white">
-              {{ user.username }}
+              {{ user.firstname }} {{ user.lastname }}
             </h3>
           </div>
-
+         
           <div class="flex space-x-1">
             <fwb-tooltip content="Edit user" placement="top">
               <template #trigger>
@@ -69,10 +65,15 @@
             </fwb-tooltip>
           </div>
         </div>
-
+         <div class="flex justify-between items-start">
+          <div class="flex flex-col">
+            <h3 class="text-sm font-medium text-gray-900 dark:text-white">
+              {{ user.username }}
+            </h3>
+          </div>
+        </div>
         <div class="mt-4 flex items-center text-sm text-gray-500">
-          <div class="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
-          Active Member
+          Position: {{ user.position }}
         </div>
       </div>
     </fwb-card>

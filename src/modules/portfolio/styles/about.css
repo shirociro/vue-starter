@@ -1,0 +1,29 @@
+.lifted {
+  position: relative;
+  top: -100px;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.skill-btn {
+  background: #fff;
+  border: none;
+  padding: 6px 12px;
+  transition: 0.2s;
+}
+
+.skill-btn:hover {
+  background: #2a7378;
+  color: #fff;
+}
+
+.skill-tooltip {
+  position: absolute;
+  bottom: 120%;
+  opacity: 0;
+  transition: 0.2s;
+}
+
+.tooltip-visible .skill-tooltip {
+  opacity: 1;
+}
